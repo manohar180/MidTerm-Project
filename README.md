@@ -1,0 +1,1 @@
+"Make My Yatra" is a web-based platform that allows users to book bus tickets for travel between cities in India. The platform provides an interactive interface where users can search for available buses based on their departure and destination locations, select a travel date, and proceed with booking the bus and seat of their choice.
