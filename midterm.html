@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make My Yatra</title>
+    <image src="https://companieslogo.com/img/orig/YTRA_BIG-b94c937a.png?t=1720244494" class="logo"></image>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #333;
+            transition: background 0.5s ease-in-out;
+        }
+        .logo{
+            width:175px;
+            height:auto;
+            padding-top:30px;
+            padding-bottom:0px;
+        }
+        h1 {
+            margin: 30px 0;
+            font-size: 3.5rem;
+            color: #fbf9f9;
+            animation: fadeInDown 1s;
+        }
+        .form-container {
+            margin: 20px auto;
+            padding: 30px;
+            max-width: 500px;
+            background: rgba(241, 241, 243, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideInUp 1s;
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .form-container:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        input, button {
+            width: 85%;
+            padding: 12px;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            outline: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        input:focus, button:focus {
+            box-shadow: 0 0 8px rgba(1, 150, 135, 0.8);
+        }
+        input {
+            background-color: #f4f4f9;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 8px 15px;
+            font-size: 1rem;
+            width: 200px;
+            margin: 10px auto;
+        }
+        button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        .buses-container {
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 1s;
+        }
+        .bus {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 15px auto;
+            border-radius: 10px;
+            max-width: 500px;
+            transition: transform 0.3s;
+        }
+        .bus:hover {
+            transform: scale(1.05);
+        }
+        .seat-layout {
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .seat {
+            width: 45px;
+            height: 45px;
+            background: #eee;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.5s, background 0.5s;
+        }
+        .seat:hover {
+            transform: scale(1.1);
+            background: #d4edda;
+        }
+        .seat.selected {
+            background: #4caf50;
+            color: white;
+        }
+        .deck-label {
+            grid-column: span 4;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4caf50;
+            font-size: 1.3rem;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .form-container {
+                width: 90%;
+                padding: 20px;
+            }
+            .bus {
+                width: 90%;
+            }
+            button {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Make My Yatra</h1>
+    <div class="form-container">
+        <input list="cityList" id="from" placeholder="From Destination" />
+        <input list="cityList" id="to" placeholder="To Destination" />
+        <input type="date" id="date" placeholder="Select Date" />
+        <datalist id="cityList">
+            <option value="Delhi">
+            <option value="Mumbai">
+            <option value="Chennai">
+            <option value="Kolkata">
+            <option value="Bangalore">
+            <option value="Guntur">
+            <option value="Hyderabad">
+            <option value="Ahmedabad">
+            <option value="Pune">
+            <option value="Jaipur">
+            <option value="Lucknow">
+        </datalist>
+        <button onclick="searchBuses()">Search Buses</button>
+    </div>
+    <div class="buses-container" id="busesContainer"></div>
+    <script>
+        document.getElementById('date').setAttribute('min', new Date().toISOString().split('T')[0]);
+        function searchBuses() {
+            const from = document.getElementById('from').value;
+            const to = document.getElementById('to').value;
+            const date = document.getElementById('date').value;
+            if (!from || !to || !date) {
+                alert('Please enter both From, To destinations, and Select a Date!');
+                return;
+            }
+            const busesContainer = document.getElementById('busesContainer');
+            busesContainer.innerHTML = '';
+            const buses = [
+                { id: 1, name: 'Express Bus', price: 500 },
+                { id: 2, name: 'Luxury Bus', price: 800 },
+                { id: 3, name: 'Sleeper Bus', price: 1000 },
+                { id: 4, name: 'Semi-Sleeper Bus', price: 700 },
+                { id: 5, name: 'AC Bus', price: 1200 },
+                { id: 6, name: 'Non-AC Bus', price: 400 }
+            ];
+            buses.forEach(bus => {
+                const busDiv = document.createElement('div');
+                busDiv.className = 'bus';
+                busDiv.innerHTML = `
+                    <p><strong>${bus.name}</strong></p>
+                    <p>Price: ₹${bus.price}</p>
+                    <button onclick="selectBus(${bus.id}, '${bus.name}', ${bus.price})">Select Seat</button>
+                `;
+                busesContainer.appendChild(busDiv);
+            });
+            busesContainer.style.display = 'block';
+        }
+        function selectBus(id, name, price) {
+            const busesContainer = document.getElementById('busesContainer');
+            busesContainer.innerHTML = ` 
+                <p>You selected <strong>${name}</strong> with a ticket price of ₹${price}.</p>
+                <div class="seat-layout" id="seatLayout">
+                    <div class="deck-label">Lower Deck</div>
+                    ${generateVerticalSeats(1, 8)}
+                    <div class="deck-label">Upper Deck</div>
+                    ${generateVerticalSeats(9, 16)}
+                </div>
+                <button onclick="proceedToDetails()">Proceed</button>
+            `;
+            const seatDivs = document.querySelectorAll('.seat');
+            seatDivs.forEach(seatDiv => {
+                seatDiv.onclick = function () {
+                    seatDiv.classList.toggle('selected');
+                };
+            });
+        }
+        function generateVerticalSeats(start, end) {
+            let seatsHTML = '';
+            for (let i = start; i <= start + 3; i++) {
+                for (let j = i; j <= end; j += 4) {
+                    seatsHTML += `<div class="seat">${j}</div>`;
+                }
+            }
+            return seatsHTML;
+        }
+        function proceedToDetails() {
+            const selectedSeats = document.querySelectorAll('.seat.selected');
+            if (selectedSeats.length === 0) {
+                alert('Please select at least one seat.');
+                return;
+            }
+            const seatNumbers = Array.from(selectedSeats).map(seat => seat.textContent).join(', ');
+            const busesContainer = document.getElementById('busesContainer');
+            busesContainer.innerHTML = `
+                <p>You selected seat numbers <strong>${seatNumbers}</strong>.</p>
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="number" id="age" placeholder="Your Age" required>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <br>
+                <button onclick="payNow()">Pay Now</button>
+            `;
+        }
+        function payNow() {
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const email = document.getElementById('email').value;
+            if (!name || !age || !email) {
+                alert('Please fill all the details.');
+                return;
+            }
+            window.location.href = 'https://payu.in/payment-gateway/';
+        }
+    </script>
+</body>
+</html>
